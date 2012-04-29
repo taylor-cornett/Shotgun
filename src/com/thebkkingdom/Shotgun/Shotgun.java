@@ -34,13 +34,19 @@ public class Shotgun extends JavaPlugin {
 		Block target = player.getTargetBlock(null, 200);
 		Location targetLocation = target.getLocation();
 
-		if (command.getName().equalsIgnoreCase("airstrike") && args.length == 1) {
+		if (command.getName().equalsIgnoreCase("airstrike")) {
+			if(!(args.length==0)){
+				sender.sendMessage(ChatColor.RED + "Did you mean /Airstrike");
+			}
 			if (player.hasPermission("shotgun.airstrike")) {
 				target.getWorld().strikeLightning(targetLocation);
 				target.getWorld().createExplosion(targetLocation, 5);
 				sender.sendMessage(ChatColor.BLUE
 						+ "[Shotgun] Airstrike called at your crosshairs");
+			} else {
+				sender.sendMessage(ChatColor.RED + "You do not have permission!");
 			}
+			return true;
 		}
 		return false;
 
