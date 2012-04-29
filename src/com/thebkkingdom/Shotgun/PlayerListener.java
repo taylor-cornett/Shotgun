@@ -6,15 +6,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Explosive;
-import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 public class PlayerListener implements Listener {
 
@@ -27,8 +24,6 @@ public class PlayerListener implements Listener {
 
 		if (event.getAction() == Action.LEFT_CLICK_AIR) {
 			if (player.getItemInHand().getType() == Material.BOOK) {
-				// Shotgun - Added permission node in YML registers defaultl to
-				// Op
 				if (player.hasPermission("shotgun.shotgun")) {
 
 					world.playEffect(playerLocation, Effect.BOW_FIRE, 50);
@@ -45,7 +40,7 @@ public class PlayerListener implements Listener {
 					}
 
 					
-					// Checks if player has exactly five arrows. Needs fixing.
+					// Checks if player has exactly five arrows. Needs to check if player has 5 or more arrows.
 					if (player.getInventory().contains(
 							new ItemStack(Material.ARROW, 5))) {
 						player.getInventory().removeItem(

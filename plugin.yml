@@ -5,10 +5,16 @@ commands:
   Airstrike:
    description: Help Menu
    usage: /Airstrike
+  Nuke:
+   description: Help Menu
+   usage: /Nuke
 permissions:
   shotgun.airstrike:
    description: Uses the airstrike command
    default: op
   shotgun.shotgun:
    description: Uses the shotgun command
+   default: op
+  shotgun.nuke:
+   description: Uses the nuke command
    default: op

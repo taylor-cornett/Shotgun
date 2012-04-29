@@ -53,6 +53,19 @@ public class Shotgun extends JavaPlugin {
 			}
 			return true;
 		}
+		
+		if (command.getName().equalsIgnoreCase("nuke")) {
+			if (!(args.length == 0)) {
+				sender.sendMessage(ChatColor.BLUE
+						+ "[Shotgun] Did you mean /Nuke");
+			}
+			if (player.hasPermission("shotgun.nuke")) {
+				target.getWorld().createExplosion(targetLocation, 50F);
+			} else {
+				sender.sendMessage(ChatColor.RED + "You do not have permission!");
+			}
+			return true;
+		}
 		return false;
 	}
 }
