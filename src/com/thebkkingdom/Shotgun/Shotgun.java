@@ -25,6 +25,9 @@ public class Shotgun extends JavaPlugin {
 
 		getServer().getPluginManager().registerEvents(new PlayerListener(),
 				this);
+
+		getServer().getPluginManager().registerEvents(new EntityListener(),
+				this);
 	}
 
 	public boolean onCommand(CommandSender sender, Command command,
@@ -35,8 +38,9 @@ public class Shotgun extends JavaPlugin {
 		Location targetLocation = target.getLocation();
 
 		if (command.getName().equalsIgnoreCase("airstrike")) {
-			if(!(args.length==0)){
-				sender.sendMessage(ChatColor.RED + "Did you mean /Airstrike");
+			if (!(args.length == 0)) {
+				sender.sendMessage(ChatColor.BLUE
+						+ "[Shotgun] Did you mean /Airstrike");
 			}
 			if (player.hasPermission("shotgun.airstrike")) {
 				target.getWorld().strikeLightning(targetLocation);
@@ -44,11 +48,11 @@ public class Shotgun extends JavaPlugin {
 				sender.sendMessage(ChatColor.BLUE
 						+ "[Shotgun] Airstrike called at your crosshairs");
 			} else {
-				sender.sendMessage(ChatColor.RED + "You do not have permission!");
+				sender.sendMessage(ChatColor.RED
+						+ "You do not have permission!");
 			}
 			return true;
 		}
 		return false;
-
 	}
 }

@@ -6,13 +6,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Explosive;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class PlayerListener implements Listener {
 
@@ -25,24 +27,31 @@ public class PlayerListener implements Listener {
 
 		if (event.getAction() == Action.LEFT_CLICK_AIR) {
 			if (player.getItemInHand().getType() == Material.BOOK) {
-				//Shotgun - Added permission node in YML registers defaultl to Op
-				if (player.hasPermission("shotgun.shotgun")){
+				// Shotgun - Added permission node in YML registers defaultl to
+				// Op
+				if (player.hasPermission("shotgun.shotgun")) {
 
 					world.playEffect(playerLocation, Effect.BOW_FIRE, 50);
-					world.createExplosion(playerLocation, -1);
-					world.createExplosion(playerLocation, -1);
 					world.playEffect(playerLocation, Effect.SMOKE, 105);
-					// Runs the task 5 times
-					for (int i = 0; i < 6; i++) {
 
-						player.launchProjectile(Arrow.class);
-
+					// run task twice
+					for (int i = 0; i < 2; i++) {
+						world.createExplosion(playerLocation, -1);
 					}
 
+					// Runs the task 5 times
+					for (int i = 0; i < 5; i++) {
+						player.launchProjectile(Arrow.class);
+					}
+
+					
+					// Checks if player has exactly five arrows. Needs fixing.
 					if (player.getInventory().contains(
 							new ItemStack(Material.ARROW, 5))) {
 						player.getInventory().removeItem(
 								new ItemStack(Material.ARROW, 5));
+						
+						//fire arrow now
 					} else {
 						player.sendMessage(ChatColor.BLUE
 								+ "[Shotgun] You need at least 5 arrows to use the shotgun!");
@@ -58,7 +67,24 @@ public class PlayerListener implements Listener {
 			if (event.getAction() == Action.RIGHT_CLICK_AIR) {
 				if (player.getItemInHand().getType() == Material.BOOK) {
 
-					world.spawnCreature(playerLocation, EntityType.FIREBALL);
+					//world.spawnCreature(playerLocation, EntityType.FIREBALL);
+
+					/*
+					Fireball fb = this.b.getEntity().launchProjectile(
+							Fireball.class);
+					fb.setYield(200);
+					fb.setBounce(false);
+					fb.setDirection(p
+							.getPlayer()
+							.getVelocity()
+							.add(p.getPlayer()
+									.getLocation()
+									.toVector()
+									.subtract(
+											this.b.getEntity().getLocation()
+													.toVector()).normalize()
+									.multiply(Integer.MAX_VALUE)));
+					*/				
 				}
 			}
 		}
