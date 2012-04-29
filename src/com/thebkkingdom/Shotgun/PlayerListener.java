@@ -25,18 +25,19 @@ public class PlayerListener implements Listener {
 
 		if (event.getAction() == Action.LEFT_CLICK_AIR) {
 			if (player.getItemInHand().getType() == Material.BOOK) {
-				if (player.hasPermission("shotgun.shotgun") || player.isOp()) {
+				//Shotgun - Added permission node in YML registers defaultl to Op
+				if (player.hasPermission("shotgun.shotgun")){
 
 					world.playEffect(playerLocation, Effect.BOW_FIRE, 50);
 					world.createExplosion(playerLocation, -1);
 					world.createExplosion(playerLocation, -1);
 					world.playEffect(playerLocation, Effect.SMOKE, 105);
+					// Runs the task 5 times
+					for (int i = 0; i < 6; i++) {
 
-					player.launchProjectile(Arrow.class);
-					player.launchProjectile(Arrow.class);
-					player.launchProjectile(Arrow.class);
-					player.launchProjectile(Arrow.class);
-					player.launchProjectile(Arrow.class);
+						player.launchProjectile(Arrow.class);
+
+					}
 
 					if (player.getInventory().contains(
 							new ItemStack(Material.ARROW, 5))) {
