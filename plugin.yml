@@ -10,5 +10,5 @@ permissions:
    description: Uses the airstrike command
    default: op
   shotgun.shotgun:
-   description: Uses the airstrike command
+   description: Uses the shotgun command
    default: op
