@@ -13,7 +13,6 @@ public class Shotgun extends JavaPlugin {
 	public void onEnable() {
 
 		this.registerEvents();
-		System.out.println("[Shotgun enabled]");
 
 	}
 

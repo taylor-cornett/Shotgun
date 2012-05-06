@@ -13,8 +13,14 @@ permissions:
    description: Uses the airstrike command
    default: op
   shotgun.shotgun:
-   description: Uses the shotgun command
+   description: Uses the shotgun
    default: op
   shotgun.nuke:
    description: Uses the nuke command
+   default: op
+  shotgun.grenade:
+   description: Uses the grenade
+   default: op
+  shotgun.smoke:
+   description: Uses the smoke grenade
    default: op
