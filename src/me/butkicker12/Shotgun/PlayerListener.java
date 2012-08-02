@@ -22,6 +22,9 @@ public class PlayerListener implements Listener {
 		Location playerLocation = player.getLocation();
 		World world = player.getWorld();
 
+		/*
+		 * Shotgun gun
+		 */
 		if (event.getAction() == Action.LEFT_CLICK_AIR) {
 			if (player.getItemInHand().getType() == Material.BOOK) {
 				if (player.hasPermission("shotgun.shotgun")) {
@@ -30,7 +33,8 @@ public class PlayerListener implements Listener {
 					 */
 					if (player.getInventory().contains(Material.ARROW, 5)) {
 
-						player.getInventory().removeItem(new ItemStack(Material.ARROW, 5));
+						player.getInventory().removeItem(
+								new ItemStack(Material.ARROW, 5));
 
 						world.playEffect(playerLocation, Effect.BOW_FIRE, 50);
 						world.playEffect(playerLocation, Effect.SMOKE, 105);
@@ -51,12 +55,15 @@ public class PlayerListener implements Listener {
 				}
 			}
 
+			/*
+			 * Nuke gun
+			 */
 			if (event.getAction() == Action.RIGHT_CLICK_AIR) {
 				if (player.getItemInHand().getType() == Material.BOOK) {
 
 					player.sendMessage(ChatColor.BLUE
 							+ "[Shotgun] Sorry this feature does not work right now. :( It will be back soon!");
-					//world.spawnCreature(playerLocation, EntityType.FIREBALL);
+					// world.spawnCreature(playerLocation, EntityType.FIREBALL);
 
 					/*
 					 * Fireball fb = this.b.getEntity().launchProjectile(

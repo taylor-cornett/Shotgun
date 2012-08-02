@@ -16,9 +16,7 @@ public class Shotgun extends JavaPlugin {
 
 	}
 
-	public void onDisable() {
-
-	}
+	public void onDisable() {}
 
 	private void registerEvents() {
 
@@ -36,12 +34,15 @@ public class Shotgun extends JavaPlugin {
 		Block target = player.getTargetBlock(null, 200);
 		Location targetLocation = target.getLocation();
 
+		/*
+		 * Airstrike command
+		 */
 		if (command.getName().equalsIgnoreCase("airstrike")) {
 			if (!(args.length == 0)) {
 				sender.sendMessage(ChatColor.BLUE
 						+ "[Shotgun] Did you mean /Airstrike");
 			}
-			if (player.hasPermission("shotgun.airstrike")) {
+			if (sender.hasPermission("shotgun.airstrike")) {
 				target.getWorld().strikeLightning(targetLocation);
 				target.getWorld().createExplosion(targetLocation, 5);
 				sender.sendMessage(ChatColor.BLUE
@@ -52,16 +53,21 @@ public class Shotgun extends JavaPlugin {
 			}
 			return true;
 		}
-		
+
+		/*
+		 * Nuke command
+		 */
+
 		if (command.getName().equalsIgnoreCase("nuke")) {
 			if (!(args.length == 0)) {
 				sender.sendMessage(ChatColor.BLUE
 						+ "[Shotgun] Did you mean /Nuke");
 			}
-			if (player.hasPermission("shotgun.nuke")) {
+			if (sender.hasPermission("shotgun.nuke")) {
 				target.getWorld().createExplosion(targetLocation, 50F);
 			} else {
-				sender.sendMessage(ChatColor.RED + "You do not have permission!");
+				sender.sendMessage(ChatColor.RED
+						+ "You do not have permission!");
 			}
 			return true;
 		}

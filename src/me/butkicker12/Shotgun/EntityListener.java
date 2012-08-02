@@ -13,10 +13,13 @@ public class EntityListener implements Listener {
 
 	@EventHandler
 	public void ProjectileHit(ProjectileHitEvent event) {
-		// if egg hits create explosion, snowball smoke
+
 		Entity entity = event.getEntity();
 		Player player = (Player) entity;
 
+		/*
+		 * Grenade (Egg)
+		 */
 		if (entity instanceof Egg) {
 			if (player.hasPermission("shotgun.grenade")) {
 				entity.getWorld().createExplosion(entity.getLocation(), 5F);
@@ -25,6 +28,9 @@ public class EntityListener implements Listener {
 			}
 		}
 
+		/*
+		 * Smoke grenade (Snowball)
+		 */
 		if (entity instanceof Snowball) {
 			if (player.hasPermission("shotgun.smoke")) {
 				entity.getWorld().createExplosion(entity.getLocation(), -10F);
