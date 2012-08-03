@@ -8,13 +8,17 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Shotgun extends JavaPlugin {
@@ -63,7 +67,7 @@ public class Shotgun extends JavaPlugin {
 		// Player player = (Player) sender;
 		Block target = ((Player) sender).getTargetBlock(null, 200);
 		Location targetLocation = target.getLocation();
-		
+
 		/*
 		 * Check if sender is player
 		 */
@@ -105,8 +109,61 @@ public class Shotgun extends JavaPlugin {
 				}
 				return true;
 			}
+			
+			/*
+			 * Shotgun stick fire alternative
+			 */
+			if (command.getName().equalsIgnoreCase("shotgun")) {
+				if (args[0].equalsIgnoreCase("fire")) {
+					if (((Player) sender).hasPermission("shotgun.shotgun")) {
+						if (getConfig().getBoolean(
+								"weapons.shotgun.fire-via-command")) {
+							/*
+							 * Checks if player has 5 arrows. If they do then it
+							 * fires.
+							 */
+							if (((Player) sender).getInventory().contains(
+									Material.ARROW, 5)) {
+
+								((Player) sender).getInventory().removeItem(
+										new ItemStack(Material.ARROW, 5));
+
+								((Player) sender).getWorld().playEffect(
+										((Player) sender).getLocation(),
+										Effect.BOW_FIRE, 50);
+								((Player) sender).getWorld().playEffect(
+										((Player) sender).getLocation(),
+										Effect.SMOKE, 105);
+
+								// run task twice
+								for (int i = 0; i < 2; i++) {
+									((Player) sender)
+											.getWorld()
+											.createExplosion(
+													((Player) sender)
+															.getLocation(),
+													-1);
+								}
+
+								// Runs the task 5 times
+								for (int i = 0; i < 5; i++) {
+									((Player) sender)
+											.launchProjectile(Arrow.class);
+								}
+							} else {
+								sender.sendMessage(ChatColor.BLUE
+										+ "[Shotgun] You need at least 5 arrows to use the shotgun!");
+							}
+						} else {
+							sender.sendMessage("[Shotgun] enable: 'weapons.shotgun.fire-via-command' for this command to work");
+						}
+					}
+				}
+				return true;
+			}
 		} else {
-			sender.sendMessage(ChatColor.RED + "[Shotgun] You must be a player to use that command!");
+			sender.sendMessage(ChatColor.RED
+					+ "[Shotgun] You must be a player to use that command!");
 		}
 		return false;
 	}
@@ -173,6 +230,8 @@ public class Shotgun extends JavaPlugin {
 	}
 
 	public void writeYaml() {
+
+		getConfig().set("weapons.shotgun.fire-via-command", false);
 
 		// TODO
 		getConfig().set("weapon.cooldown.shotgun", "5");
