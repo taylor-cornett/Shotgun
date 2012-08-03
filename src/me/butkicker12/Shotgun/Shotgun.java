@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -22,25 +23,25 @@ public class Shotgun extends JavaPlugin {
 	FileConfiguration config;
 
 	public void onEnable() {
-		//initialize File and FileConfiguration
-        configFile = new File(getDataFolder(), "config.yml");
-        
-        try {
-            firstRun();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        //declare the FileConfigurations using YamlConfigurations
-        config = new YamlConfiguration();
-        
-        loadYaml();
-        
+		// initialize File and FileConfiguration
+		configFile = new File(getDataFolder(), "config.yml");
+
+		try {
+			firstRun();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// declare the FileConfigurations using YamlConfigurations
+		config = new YamlConfiguration();
+
+		loadYaml();
+
 		this.registerEvents();
 	}
 
 	public void onDisable() {
-		
+		saveYaml();
 	}
 
 	private void registerEvents() {
@@ -51,9 +52,9 @@ public class Shotgun extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new EntityListener(),
 				this);
 	}
-	
+
 	public void isWeaponEnabled() {
-		//TODO
+		// TODO
 	}
 
 	public boolean onCommand(CommandSender sender, Command command,
@@ -62,56 +63,69 @@ public class Shotgun extends JavaPlugin {
 		// Player player = (Player) sender;
 		Block target = ((Player) sender).getTargetBlock(null, 200);
 		Location targetLocation = target.getLocation();
-
+		
 		/*
-		 * Airstrike command
+		 * Check if sender is player
 		 */
-		if (command.getName().equalsIgnoreCase("airstrike")) {
-			if (!(args.length == 0)) {
-				sender.sendMessage(ChatColor.BLUE
-						+ "[Shotgun] Did you mean /Airstrike");
+		if ((sender instanceof Player)) {
+			/*
+			 * Airstrike command
+			 */
+			if (command.getName().equalsIgnoreCase("airstrike")) {
+				if (!(args.length == 0)) {
+					sender.sendMessage(ChatColor.BLUE
+							+ "[Shotgun] Did you mean /airstrike?");
+				}
+				if (sender.hasPermission("shotgun.airstrike")) {
+					target.getWorld().strikeLightning(targetLocation);
+					target.getWorld().createExplosion(targetLocation, 5);
+					sender.sendMessage(ChatColor.BLUE
+							+ "[Shotgun] Airstrike called at your crosshairs");
+				} else {
+					sender.sendMessage(ChatColor.RED
+							+ "You do not have permission!");
+				}
+				return true;
 			}
-			if (sender.hasPermission("shotgun.airstrike")) {
-				target.getWorld().strikeLightning(targetLocation);
-				target.getWorld().createExplosion(targetLocation, 5);
-				sender.sendMessage(ChatColor.BLUE
-						+ "[Shotgun] Airstrike called at your crosshairs");
-			} else {
-				sender.sendMessage(ChatColor.RED
-						+ "You do not have permission!");
-			}
-			return true;
-		}
 
-		/*
-		 * Nuke command
-		 */
+			/*
+			 * Nuke command
+			 */
 
-		if (command.getName().equalsIgnoreCase("nuke")) {
-			if (!(args.length == 0)) {
-				sender.sendMessage(ChatColor.BLUE
-						+ "[Shotgun] Did you mean /Nuke");
+			if (command.getName().equalsIgnoreCase("nuke")) {
+				if (!(args.length == 0)) {
+					sender.sendMessage(ChatColor.BLUE
+							+ "[Shotgun] Did you mean /nuke?");
+				}
+				if (sender.hasPermission("shotgun.nuke")) {
+					target.getWorld().createExplosion(targetLocation, 50F);
+				} else {
+					sender.sendMessage(ChatColor.RED
+							+ "You do not have permission!");
+				}
+				return true;
 			}
-			if (sender.hasPermission("shotgun.nuke")) {
-				target.getWorld().createExplosion(targetLocation, 50F);
-			} else {
-				sender.sendMessage(ChatColor.RED
-						+ "You do not have permission!");
-			}
-			return true;
+		} else {
+			sender.sendMessage(ChatColor.RED + "[Shotgun] You must be a player to use that command!");
 		}
 		return false;
 	}
 
 	/*
-	 * if the yaml does not exists, we load the yaml located at your jar file, then save it in
-     *  the File(/plugins/shotgun/*.yml)
+	 * if the yaml does not exists, we load the yaml located at your jar file,
+	 * then save it in the File(/plugins/shotgun/*.yml) then populate and save
 	 * only needed at onEnable()
 	 */
 	private void firstRun() throws Exception {
 		if (!configFile.exists()) {
 			configFile.getParentFile().mkdirs();
 			copy(getResource("config.yml"), configFile);
+
+			// populate and save
+			writeYaml();
+			saveYaml();
+			getLogger().log(Level.INFO,
+					"[Shotgun] Configuration sucessfully populated!");
 		}
 	}
 
@@ -131,47 +145,50 @@ public class Shotgun extends JavaPlugin {
 	}
 
 	/*
-	 * Load yaml
-	 * can be used anytime after first startup
+	 * Load yaml can be used anytime after first startup
 	 */
 	public void loadYaml() {
 		try {
 			config.load(configFile); // loads the contents of the File to its
+			getLogger().log(Level.INFO, "[Shotgun] Configuration loaded!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	/*
-	 * can be called anywhere if you have *.set(path,value) on your
-	 * methods
+	 * can be called anywhere if you have *.set(path,value) on your methods
 	 */
 	public void saveYaml() {
 		try {
 			config.save(configFile); // saves the FileConfiguration to its File
 		} catch (IOException e) {
+			getLogger().log(
+					Level.WARNING,
+					"[Shotgun] Unable to save config at: " + getDataFolder()
+							+ "config.yml");
 			e.printStackTrace();
+
 		}
 	}
-	
+
 	public void writeYaml() {
-		
-		//TODO
+
+		// TODO
 		getConfig().set("weapon.cooldown.shotgun", "5");
 		getConfig().set("weapon.cooldown.nuke", "20");
 		getConfig().set("weapon.cooldown.smoke", "10");
 		getConfig().set("weapon.cooldown.grenade", "10");
 		getConfig().set("weapon.cooldown.grenade-launcher", "20");
-		
-		
-		//TODO
+
+		// TODO
 		getConfig().set("weapon.enabled.shotgun", true);
 		getConfig().set("weapon.enabled.nuke", true);
 		getConfig().set("weapon.enabled.smoke", true);
 		getConfig().set("weapon.enabled.grenade", true);
 		getConfig().set("weapon.enabled..grenade-launcher", true);
-		//not used
-		//getConfig.set("log plugin use to file", false");
+		// not used
+		// getConfig.set("log plugin use to file", false");
 	}
 
 }
