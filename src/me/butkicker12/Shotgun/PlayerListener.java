@@ -59,7 +59,7 @@ public class PlayerListener implements Listener {
 			 * Nuke gun
 			 */
 			if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-				if (player.getItemInHand().getType() == Material.BOOK) {
+				if (player.getItemInHand().getType() == Material.BOOK && player.hasPermission("shotgun.nuke")) {
 
 					player.sendMessage(ChatColor.BLUE
 							+ "[Shotgun] Sorry this feature does not work right now. :( It will be back soon!");
@@ -73,6 +73,9 @@ public class PlayerListener implements Listener {
 					 * this.b.getEntity().getLocation() .toVector()).normalize()
 					 * .multiply(Integer.MAX_VALUE)));
 					 */
+					if(!player.hasPermission("shotgun.nuke")) {
+						
+					}
 				}
 			}
 		}
