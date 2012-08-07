@@ -1,10 +1,14 @@
 package me.butkicker12.Shotgun;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -27,7 +31,7 @@ public class Shotgun extends JavaPlugin {
 	FileConfiguration config;
 
 	public void onEnable() {
-		//config below
+		// config below
 		// initialize File and FileConfiguration
 		configFile = new File(getDataFolder(), "config.yml");
 
@@ -41,6 +45,9 @@ public class Shotgun extends JavaPlugin {
 		config = new YamlConfiguration();
 
 		this.loadYaml();
+
+		// check for updates
+		checkUpdate();
 
 		this.registerEvents();
 	}
@@ -108,7 +115,7 @@ public class Shotgun extends JavaPlugin {
 				}
 				return true;
 			}
-			
+
 			/*
 			 * Shotgun stick fire alternative
 			 */
@@ -231,7 +238,8 @@ public class Shotgun extends JavaPlugin {
 
 	private void writeYaml() {
 
-		getConfig().set("weapons.shotgun.fire-via-command", false);
+		getConfig().set("options.update-checker", true);
+		getConfig().set("weapon.shotgun.fire-via-command", false);
 
 		// TODO
 		getConfig().set("weapon.cooldown.shotgun", "5");
@@ -248,5 +256,55 @@ public class Shotgun extends JavaPlugin {
 		getConfig().set("weapon.enabled..grenade-launcher", true);
 		// not used
 		// getConfig.set("log plugin use to file", false");
+	}
+
+	private void checkUpdate() {
+		if (getConfig().getBoolean(
+				"options.update-checker") == true) {
+			// state checking for updates
+			getLogger()
+					.log(Level.INFO, "[Shotgun] Checking for updates.......");
+
+			URL url;
+			URLConnection connection;
+			InputStreamReader inputstream = null;
+			// BufferedReader reader;
+
+			try {
+				url = new URL(
+						"https://dl.dropbox.com/u/39012172/Bukkit/Shotgun/version.txt");
+				connection = url.openConnection();
+				inputstream = new InputStreamReader(connection.getInputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			BufferedReader reader = new BufferedReader(inputstream);
+			String remoteVersion = "";
+			String pluginVersion = this.getDescription().getVersion();
+
+			try {
+				remoteVersion = reader.readLine();
+				connection = null;
+				inputstream = null;
+				reader.close();
+				reader = null;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (!(remoteVersion.equalsIgnoreCase(pluginVersion))) {
+				getLogger()
+						.log(Level.INFO,
+								"[Shotgun] You have updates! Please download version:"
+										+ remoteVersion
+										+ "from the plugin page (http://dev.bukkit.org/server-mods/shotgun/files/)");
+			} else {
+				getLogger()
+						.log(Level.INFO, "[Shotgun] You gave no updates! :D");
+			}
+		}
 	}
 }

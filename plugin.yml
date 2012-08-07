@@ -1,13 +1,17 @@
 name: Shotgun
 version: 1.1
-main: com.thebkkingdom.Shotgun.Shotgun
+main: me.butkicker12.Shotgun.Shotgun
+author: Butkicker12
 commands:
   Airstrike:
    description: Help Menu
-   usage: /Airstrike
+   usage: /airstrike
   Nuke:
    description: Help Menu
-   usage: /Nuke
+   usage: /nuke
+  Shotgun:
+   description: Help Menu
+   usage: /shotgun
 permissions:
   shotgun.airstrike:
    description: Uses the airstrike command
