@@ -27,6 +27,7 @@ public class Shotgun extends JavaPlugin {
 	FileConfiguration config;
 
 	public void onEnable() {
+		//config below
 		// initialize File and FileConfiguration
 		configFile = new File(getDataFolder(), "config.yml");
 
@@ -39,7 +40,7 @@ public class Shotgun extends JavaPlugin {
 		// declare the FileConfigurations using YamlConfigurations
 		config = new YamlConfiguration();
 
-		loadYaml();
+		this.loadYaml();
 
 		this.registerEvents();
 	}
@@ -49,10 +50,8 @@ public class Shotgun extends JavaPlugin {
 	}
 
 	private void registerEvents() {
-
 		getServer().getPluginManager().registerEvents(new PlayerListener(),
 				this);
-
 		getServer().getPluginManager().registerEvents(new EntityListener(),
 				this);
 	}
@@ -117,7 +116,7 @@ public class Shotgun extends JavaPlugin {
 				if (args[0].equalsIgnoreCase("fire")) {
 					if (((Player) sender).hasPermission("shotgun.shotgun")) {
 						if (getConfig().getBoolean(
-								"weapons.shotgun.fire-via-command")) {
+								"weapons.shotgun.fire-via-command") == true) {
 							/*
 							 * Checks if player has 5 arrows. If they do then it
 							 * fires.
@@ -156,6 +155,7 @@ public class Shotgun extends JavaPlugin {
 							}
 						} else {
 							sender.sendMessage("[Shotgun] enable: 'weapons.shotgun.fire-via-command' for this command to work");
+							return false;
 						}
 					}
 				}
@@ -229,7 +229,7 @@ public class Shotgun extends JavaPlugin {
 		}
 	}
 
-	public void writeYaml() {
+	private void writeYaml() {
 
 		getConfig().set("weapons.shotgun.fire-via-command", false);
 
@@ -249,5 +249,4 @@ public class Shotgun extends JavaPlugin {
 		// not used
 		// getConfig.set("log plugin use to file", false");
 	}
-
 }
