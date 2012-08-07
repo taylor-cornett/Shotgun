@@ -2,11 +2,8 @@ package me.butkicker12.Shotgun;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
@@ -27,24 +24,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Shotgun extends JavaPlugin {
 
-	File configFile;
-	FileConfiguration config;
+	private File configFile = null;
+	private FileConfiguration config = null;
 
 	public void onEnable() {
-		// config below
-		// initialize File and FileConfiguration
-		configFile = new File(getDataFolder(), "config.yml");
 
-		try {
-			firstRun();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		// declare the FileConfigurations using YamlConfigurations
-		config = new YamlConfiguration();
-
-		this.loadYaml();
+		this.loadConfig();
+		this.saveConfig();
 
 		// check for updates
 		checkUpdate();
@@ -53,7 +39,7 @@ public class Shotgun extends JavaPlugin {
 	}
 
 	public void onDisable() {
-		saveYaml();
+		saveConfig();
 	}
 
 	private void registerEvents() {
@@ -122,7 +108,7 @@ public class Shotgun extends JavaPlugin {
 			if (command.getName().equalsIgnoreCase("shotgun")) {
 				if (args[0].equalsIgnoreCase("fire")) {
 					if (((Player) sender).hasPermission("shotgun.shotgun")) {
-						if (getConfig().getBoolean(
+						if (getCustomConfig().getBoolean(
 								"weapons.shotgun.fire-via-command") == true) {
 							/*
 							 * Checks if player has 5 arrows. If they do then it
@@ -175,92 +161,61 @@ public class Shotgun extends JavaPlugin {
 		return false;
 	}
 
-	/*
-	 * if the yaml does not exists, we load the yaml located at your jar file,
-	 * then save it in the File(/plugins/shotgun/*.yml) then populate and save
-	 * only needed at onEnable()
-	 */
-	private void firstRun() throws Exception {
-		if (!configFile.exists()) {
-			configFile.getParentFile().mkdirs();
-			copy(getResource("config.yml"), configFile);
-
-			// populate and save
-			writeYaml();
-			saveYaml();
-			getLogger().log(Level.INFO,
-					"[Shotgun] Configuration sucessfully populated!");
+	public void loadConfig() {
+		if (configFile == null) {
+			configFile = new File(getDataFolder(), "config.yml");
 		}
-	}
+		config = YamlConfiguration.loadConfiguration(configFile);
 
-	private void copy(InputStream in, File file) {
-		try {
-			OutputStream out = new FileOutputStream(file);
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			out.close();
-			in.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/*
-	 * Load yaml can be used anytime after first startup
-	 */
-	public void loadYaml() {
-		try {
-			config.load(configFile); // loads the contents of the File to its
-			getLogger().log(Level.INFO, "[Shotgun] Configuration loaded!");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		writeYaml();
 	}
 
 	/*
 	 * can be called anywhere if you have *.set(path,value) on your methods
 	 */
-	public void saveYaml() {
-		try {
-			config.save(configFile); // saves the FileConfiguration to its File
-		} catch (IOException e) {
-			getLogger().log(
-					Level.WARNING,
-					"[Shotgun] Unable to save config at: " + getDataFolder()
-							+ "config.yml");
-			e.printStackTrace();
-
+	public void saveConfig() {
+		if (config == null || configFile == null) {
+			return;
 		}
+		try {
+			getCustomConfig().save(configFile);
+		} catch (IOException ex) {
+			this.getLogger().log(Level.SEVERE,
+					"Could not save config to " + configFile, ex);
+		}
+	}
+
+	public FileConfiguration getCustomConfig() {
+		if (config == null) {
+			this.loadConfig();
+		}
+		return config;
 	}
 
 	private void writeYaml() {
 
-		getConfig().set("options.update-checker", true);
-		getConfig().set("weapon.shotgun.fire-via-command", false);
+		getCustomConfig().set("options.update-checker", true);
+		getCustomConfig().set("weapon.shotgun.fire-via-command", false);
 
 		// TODO
-		getConfig().set("weapon.cooldown.shotgun", "5");
-		getConfig().set("weapon.cooldown.nuke", "20");
-		getConfig().set("weapon.cooldown.smoke", "10");
-		getConfig().set("weapon.cooldown.grenade", "10");
-		getConfig().set("weapon.cooldown.grenade-launcher", "20");
+		getCustomConfig().set("weapon.cooldown.shotgun", "5");
+		getCustomConfig().set("weapon.cooldown.nuke", "20");
+		getCustomConfig().set("weapon.cooldown.smoke", "10");
+		getCustomConfig().set("weapon.cooldown.grenade", "10");
+		getCustomConfig().set("weapon.cooldown.grenade-launcher", "20");
 
 		// TODO
-		getConfig().set("weapon.enabled.shotgun", true);
-		getConfig().set("weapon.enabled.nuke", true);
-		getConfig().set("weapon.enabled.smoke", true);
-		getConfig().set("weapon.enabled.grenade", true);
-		getConfig().set("weapon.enabled..grenade-launcher", true);
+		getCustomConfig().set("weapon.enabled.shotgun", true);
+		getCustomConfig().set("weapon.enabled.nuke", true);
+		getCustomConfig().set("weapon.enabled.smoke", true);
+		getCustomConfig().set("weapon.enabled.grenade", true);
+		getCustomConfig().set("weapon.enabled..grenade-launcher", true);
 		// not used
-		// getConfig.set("log plugin use to file", false");
+		// getCustomConfig().set("log plugin use to file", false");
 	}
 
 	private void checkUpdate() {
-		if (getConfig().getBoolean(
-				"options.update-checker") == true) {
+		if (getCustomConfig().getBoolean("options.update-checker") == true) {
 			// state checking for updates
 			getLogger()
 					.log(Level.INFO, "[Shotgun] Checking for updates.......");
@@ -276,7 +231,6 @@ public class Shotgun extends JavaPlugin {
 				connection = url.openConnection();
 				inputstream = new InputStreamReader(connection.getInputStream());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -291,7 +245,6 @@ public class Shotgun extends JavaPlugin {
 				reader.close();
 				reader = null;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
