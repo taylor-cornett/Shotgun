@@ -32,8 +32,7 @@ public class Shotgun extends JavaPlugin {
 		this.loadConfig();
 		this.saveConfig();
 
-		// check for updates
-		checkUpdate();
+		this.checkUpdate();
 
 		this.registerEvents();
 	}
@@ -72,14 +71,17 @@ public class Shotgun extends JavaPlugin {
 					sender.sendMessage(ChatColor.BLUE
 							+ "[Shotgun] Did you mean /airstrike?");
 				}
-				if (sender.hasPermission("shotgun.airstrike")) {
-					target.getWorld().strikeLightning(targetLocation);
-					target.getWorld().createExplosion(targetLocation, 5);
-					sender.sendMessage(ChatColor.BLUE
-							+ "[Shotgun] Airstrike called at your crosshairs");
-				} else {
-					sender.sendMessage(ChatColor.RED
-							+ "You do not have permission!");
+				if (getCustomConfig().getBoolean("weapon.enabled.airstrike")) {
+
+					if (sender.hasPermission("shotgun.airstrike")) {
+						target.getWorld().strikeLightning(targetLocation);
+						target.getWorld().createExplosion(targetLocation, 5);
+						sender.sendMessage(ChatColor.BLUE
+								+ "[Shotgun] Airstrike called at your crosshairs");
+					} else {
+						sender.sendMessage(ChatColor.RED
+								+ "You do not have permission!");
+					}
 				}
 				return true;
 			}
@@ -105,7 +107,7 @@ public class Shotgun extends JavaPlugin {
 			 * Shotgun stick fire alternative
 			 */
 			if (command.getName().equalsIgnoreCase("shotgun")) {
-				if (((Player) sender).hasPermission("shotgun.shotgun")) {
+				if (sender.hasPermission("shotgun.shotgun")) {
 					if (getCustomConfig().getBoolean(
 							"weapons.shotgun.fire-via-command") == true) {
 						/*
@@ -156,7 +158,6 @@ public class Shotgun extends JavaPlugin {
 	public void loadConfig() {
 		if (configFile == null) {
 			configFile = new File(getDataFolder(), "config.yml");
-			getLogger().log(Level.INFO, "Created configuration file");
 		}
 		config = YamlConfiguration.loadConfiguration(configFile);
 		writeYaml();
@@ -192,6 +193,8 @@ public class Shotgun extends JavaPlugin {
 		/*
 		 * Weapon cooldown
 		 */
+		getCustomConfig().createSection(
+				"#options below are not used and don't work");
 		if (!getCustomConfig().contains("weapon.cooldown.shotgun")) {
 			getCustomConfig().set("weapon.cooldown.shotgun", 5);
 		}
@@ -222,18 +225,22 @@ public class Shotgun extends JavaPlugin {
 		if (!(getCustomConfig().contains("weapon.enabled.grenade"))) {
 			getCustomConfig().set("weapon.enabled.grenade", true);
 		}
-		if (!(getCustomConfig().contains("weapon.enabled..grenade-launcher"))) {
-			getCustomConfig().set("weapon.enabled..grenade-launcher", true);
+		if (!(getCustomConfig().getBoolean("weapon.enabled.airstrike"))) {
+			getCustomConfig().set("weapon.enabled.airstrike", true);
 		}
-		// not used
-		// getCustomConfig().set("log plugin use to file", false");
+		/*
+		 * Not used
+		 * 
+		 * if
+		 * (!(getCustomConfig().contains("weapon.enabled..grenade-launcher"))) {
+		 * getCustomConfig().set("weapon.enabled..grenade-launcher", true); }
+		 * getCustomConfig().set("log plugin use to file", false");
+		 */
 	}
 
 	private void checkUpdate() {
 		if (getCustomConfig().getBoolean("options.automatic-update-checker") == true) {
-			// state checking for updates
-			getLogger()
-					.log(Level.INFO, "Checking for updates.......");
+			getLogger().log(Level.INFO, "Checking for updates.......");
 
 			URL url;
 			URLConnection connection;
@@ -262,15 +269,14 @@ public class Shotgun extends JavaPlugin {
 				e.printStackTrace();
 			}
 
-			if ((remoteVersion.equalsIgnoreCase(pluginVersion))) {
+			if (!(remoteVersion.equalsIgnoreCase(pluginVersion))) {
 				getLogger()
 						.log(Level.INFO,
-								"You have updates! Please download version:"
+								"You have updates! Please download version: "
 										+ remoteVersion
-										+ "from the plugin page (http://dev.bukkit.org/server-mods/shotgun/files/)");
+										+ " from the plugin page (http://dev.bukkit.org/server-mods/shotgun/files/)");
 			} else {
-				getLogger()
-						.log(Level.INFO, "You gave no updates! :D");
+				getLogger().log(Level.INFO, "You have no updates! :D");
 			}
 		}
 	}

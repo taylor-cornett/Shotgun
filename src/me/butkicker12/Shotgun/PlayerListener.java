@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +16,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerListener implements Listener {
+	
+	private Shotgun plugin;
+    
+    public PlayerListener(Shotgun instance) {
+            plugin = instance;
+    }
 
 	@EventHandler
 	public void playerInteract(PlayerInteractEvent event) {
@@ -26,36 +33,34 @@ public class PlayerListener implements Listener {
 		/*
 		 * Shotgun gun
 		 */
-		if (event.getAction() == Action.LEFT_CLICK_AIR) {
-			if (player.getItemInHand().getType() == Material.BOOK) {
+		if ((event.getAction() == Action.LEFT_CLICK_AIR)
+				&& (player.getItemInHand().getType() == Material.BOOK)) {
+			if (plugin.getCustomConfig().getBoolean(
+					"weapon.enabled.shotgun") == true) {
 				if (player.hasPermission("shotgun.shotgun")) {
 					/*
 					 * Checks if player has 5 arrows. If they do then it fires.
 					 */
 					if (player.getInventory().contains(Material.ARROW, 5)) {
 
-						/*
-						player.getInventory().removeItem(
-								new ItemStack(Material.ARROW, 5));
-								*/
-						
-						Inventory inv = player.getInventory(); 
-						Material type = Material.ARROW; 
+						Inventory inv = player.getInventory();
+						Material type = Material.ARROW;
 						int amount = 5;
-						
+
 						for (ItemStack is : inv.getContents()) {
-				            if (is != null && is.getType() == type) {
-				                int newamount = is.getAmount() - amount;
-				                if (newamount > 0) {
-				                    is.setAmount(newamount);
-				                    break;
-				                } else {
-				                    inv.remove(is);
-				                    amount = -newamount;
-				                    if (amount == 0) break;
-				                }
-				            }
-				        }
+							if (is != null && is.getType() == type) {
+								int newamount = is.getAmount() - amount;
+								if (newamount > 0) {
+									is.setAmount(newamount);
+									break;
+								} else {
+									inv.remove(is);
+									amount = -newamount;
+									if (amount == 0)
+										break;
+								}
+							}
+						}
 
 						world.playEffect(playerLocation, Effect.BOW_FIRE, 50);
 						world.playEffect(playerLocation, Effect.SMOKE, 105);
@@ -75,28 +80,20 @@ public class PlayerListener implements Listener {
 					}
 				}
 			}
+		}
 
-			/*
-			 * Nuke gun
-			 */
-			if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-				if (player.getItemInHand().getType() == Material.BOOK && player.hasPermission("shotgun.nuke")) {
+		/*
+		 * Nuke gun
+		 */
+		if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+			if (plugin.getCustomConfig().getBoolean(
+					"weapon.enabled.nuke")) {
+				if (player.getItemInHand().getType() == Material.BOOK
+						&& player.hasPermission("shotgun.nuke")) {
 
 					player.sendMessage(ChatColor.BLUE
 							+ "[Shotgun] Sorry this feature does not work right now. :( It will be back soon!");
-					// world.spawnCreature(playerLocation, EntityType.FIREBALL);
-
-					/*
-					 * Fireball fb = this.b.getEntity().launchProjectile(
-					 * Fireball.class); fb.setYield(200); fb.setBounce(false);
-					 * fb.setDirection(p .getPlayer() .getVelocity()
-					 * .add(p.getPlayer() .getLocation() .toVector() .subtract(
-					 * this.b.getEntity().getLocation() .toVector()).normalize()
-					 * .multiply(Integer.MAX_VALUE)));
-					 */
-					if(!player.hasPermission("shotgun.nuke")) {
-						
-					}
+					player.launchProjectile(Fireball.class);
 				}
 			}
 		}
