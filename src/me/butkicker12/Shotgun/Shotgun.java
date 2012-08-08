@@ -233,7 +233,7 @@ public class Shotgun extends JavaPlugin {
 		if (getCustomConfig().getBoolean("options.automatic-update-checker") == true) {
 			// state checking for updates
 			getLogger()
-					.log(Level.INFO, "[Shotgun] Checking for updates.......");
+					.log(Level.INFO, "Checking for updates.......");
 
 			URL url;
 			URLConnection connection;
@@ -265,12 +265,12 @@ public class Shotgun extends JavaPlugin {
 			if ((remoteVersion.equalsIgnoreCase(pluginVersion))) {
 				getLogger()
 						.log(Level.INFO,
-								"[Shotgun] You have updates! Please download version:"
+								"You have updates! Please download version:"
 										+ remoteVersion
 										+ "from the plugin page (http://dev.bukkit.org/server-mods/shotgun/files/)");
 			} else {
 				getLogger()
-						.log(Level.INFO, "[Shotgun] You gave no updates! :D");
+						.log(Level.INFO, "You gave no updates! :D");
 			}
 		}
 	}
