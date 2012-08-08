@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerListener implements Listener {
@@ -33,8 +34,28 @@ public class PlayerListener implements Listener {
 					 */
 					if (player.getInventory().contains(Material.ARROW, 5)) {
 
+						/*
 						player.getInventory().removeItem(
 								new ItemStack(Material.ARROW, 5));
+								*/
+						
+						Inventory inv = player.getInventory(); 
+						Material type = Material.ARROW; 
+						int amount = 5;
+						
+						for (ItemStack is : inv.getContents()) {
+				            if (is != null && is.getType() == type) {
+				                int newamount = is.getAmount() - amount;
+				                if (newamount > 0) {
+				                    is.setAmount(newamount);
+				                    break;
+				                } else {
+				                    inv.remove(is);
+				                    amount = -newamount;
+				                    if (amount == 0) break;
+				                }
+				            }
+				        }
 
 						world.playEffect(playerLocation, Effect.BOW_FIRE, 50);
 						world.playEffect(playerLocation, Effect.SMOKE, 105);

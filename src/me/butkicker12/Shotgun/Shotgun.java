@@ -87,7 +87,6 @@ public class Shotgun extends JavaPlugin {
 			/*
 			 * Nuke command
 			 */
-
 			if (command.getName().equalsIgnoreCase("nuke")) {
 				if (!(args.length == 0)) {
 					sender.sendMessage(ChatColor.BLUE
@@ -106,50 +105,43 @@ public class Shotgun extends JavaPlugin {
 			 * Shotgun stick fire alternative
 			 */
 			if (command.getName().equalsIgnoreCase("shotgun")) {
-				if (args[0].equalsIgnoreCase("fire")) {
-					if (((Player) sender).hasPermission("shotgun.shotgun")) {
-						if (getCustomConfig().getBoolean(
-								"weapons.shotgun.fire-via-command") == true) {
-							/*
-							 * Checks if player has 5 arrows. If they do then it
-							 * fires.
-							 */
-							if (((Player) sender).getInventory().contains(
-									Material.ARROW, 5)) {
+				if (((Player) sender).hasPermission("shotgun.shotgun")) {
+					if (getCustomConfig().getBoolean(
+							"weapons.shotgun.fire-via-command") == true) {
+						/*
+						 * Checks if player has 5 arrows. If they do then it
+						 * fires.
+						 */
+						if (((Player) sender).getInventory().contains(
+								Material.ARROW, 5)) {
 
-								((Player) sender).getInventory().removeItem(
-										new ItemStack(Material.ARROW, 5));
+							((Player) sender).getInventory().removeItem(
+									new ItemStack(Material.ARROW, 5));
 
-								((Player) sender).getWorld().playEffect(
-										((Player) sender).getLocation(),
-										Effect.BOW_FIRE, 50);
-								((Player) sender).getWorld().playEffect(
-										((Player) sender).getLocation(),
-										Effect.SMOKE, 105);
+							((Player) sender).getWorld().playEffect(
+									((Player) sender).getLocation(),
+									Effect.BOW_FIRE, 50);
+							((Player) sender).getWorld().playEffect(
+									((Player) sender).getLocation(),
+									Effect.SMOKE, 105);
 
-								// run task twice
-								for (int i = 0; i < 2; i++) {
-									((Player) sender)
-											.getWorld()
-											.createExplosion(
-													((Player) sender)
-															.getLocation(),
-													-1);
-								}
+							// run task twice
+							for (int i = 0; i < 2; i++) {
+								((Player) sender).getWorld().createExplosion(
+										((Player) sender).getLocation(), -1);
+							}
 
-								// Runs the task 5 times
-								for (int i = 0; i < 5; i++) {
-									((Player) sender)
-											.launchProjectile(Arrow.class);
-								}
-							} else {
-								sender.sendMessage(ChatColor.BLUE
-										+ "[Shotgun] You need at least 5 arrows to use the shotgun!");
+							// Runs the task 5 times
+							for (int i = 0; i < 5; i++) {
+								((Player) sender).launchProjectile(Arrow.class);
 							}
 						} else {
-							sender.sendMessage("[Shotgun] enable: 'weapons.shotgun.fire-via-command' for this command to work");
-							return false;
+							sender.sendMessage(ChatColor.BLUE
+									+ "[Shotgun] You need at least 5 arrows to use the shotgun!");
 						}
+					} else {
+						sender.sendMessage("[Shotgun] enable: 'weapons.shotgun.fire-via-command' for this command to work");
+						return false;
 					}
 				}
 				return true;
@@ -164,15 +156,12 @@ public class Shotgun extends JavaPlugin {
 	public void loadConfig() {
 		if (configFile == null) {
 			configFile = new File(getDataFolder(), "config.yml");
+			getLogger().log(Level.INFO, "Created configuration file");
 		}
 		config = YamlConfiguration.loadConfiguration(configFile);
-
 		writeYaml();
 	}
 
-	/*
-	 * can be called anywhere if you have *.set(path,value) on your methods
-	 */
 	public void saveConfig() {
 		if (config == null || configFile == null) {
 			return;
@@ -193,29 +182,55 @@ public class Shotgun extends JavaPlugin {
 	}
 
 	private void writeYaml() {
-
-		getCustomConfig().set("options.update-checker", true);
-		getCustomConfig().set("weapon.shotgun.fire-via-command", false);
-
-		// TODO
-		getCustomConfig().set("weapon.cooldown.shotgun", "5");
-		getCustomConfig().set("weapon.cooldown.nuke", "20");
-		getCustomConfig().set("weapon.cooldown.smoke", "10");
-		getCustomConfig().set("weapon.cooldown.grenade", "10");
-		getCustomConfig().set("weapon.cooldown.grenade-launcher", "20");
-
-		// TODO
-		getCustomConfig().set("weapon.enabled.shotgun", true);
-		getCustomConfig().set("weapon.enabled.nuke", true);
-		getCustomConfig().set("weapon.enabled.smoke", true);
-		getCustomConfig().set("weapon.enabled.grenade", true);
-		getCustomConfig().set("weapon.enabled..grenade-launcher", true);
+		// Update checker
+		if (!(getCustomConfig().contains("options.automatic-update-checker"))) {
+			getCustomConfig().set("options.automatic-update-checker", true);
+		}
+		if (!(getCustomConfig().contains("options.shotgun.fire-via-command"))) {
+			getCustomConfig().set("options.shotgun.fire-via-command", false);
+		}
+		/*
+		 * Weapon cooldown
+		 */
+		if (!getCustomConfig().contains("weapon.cooldown.shotgun")) {
+			getCustomConfig().set("weapon.cooldown.shotgun", 5);
+		}
+		if (!getCustomConfig().contains("weapon.cooldown.nuke")) {
+			getCustomConfig().set("weapon.cooldown.nuke", "20");
+		}
+		if (!getCustomConfig().contains("weapon.cooldown.smoke")) {
+			getCustomConfig().set("weapon.cooldown.smoke", "10");
+		}
+		if (!(getCustomConfig().contains("weapon.cooldown.grenade"))) {
+			getCustomConfig().set("weapon.cooldown.grenade", "10");
+		}
+		if (!(getCustomConfig().contains("weapon.cooldown.grenade-launcher"))) {
+			getCustomConfig().set("weapon.cooldown.grenade-launcher", "20");
+		}
+		/*
+		 * Enabled weapon
+		 */
+		if (!(getCustomConfig().contains("weapon.enabled.shotgun"))) {
+			getCustomConfig().set("weapon.enabled.shotgun", true);
+		}
+		if (!(getCustomConfig().contains("weapon.enabled.nuke"))) {
+			getCustomConfig().set("weapon.enabled.nuke", true);
+		}
+		if (!(getCustomConfig().contains("weapon.enabled.smoke"))) {
+			getCustomConfig().set("weapon.enabled.smoke", true);
+		}
+		if (!(getCustomConfig().contains("weapon.enabled.grenade"))) {
+			getCustomConfig().set("weapon.enabled.grenade", true);
+		}
+		if (!(getCustomConfig().contains("weapon.enabled..grenade-launcher"))) {
+			getCustomConfig().set("weapon.enabled..grenade-launcher", true);
+		}
 		// not used
 		// getCustomConfig().set("log plugin use to file", false");
 	}
 
 	private void checkUpdate() {
-		if (getCustomConfig().getBoolean("options.update-checker") == true) {
+		if (getCustomConfig().getBoolean("options.automatic-update-checker") == true) {
 			// state checking for updates
 			getLogger()
 					.log(Level.INFO, "[Shotgun] Checking for updates.......");
@@ -223,7 +238,6 @@ public class Shotgun extends JavaPlugin {
 			URL url;
 			URLConnection connection;
 			InputStreamReader inputstream = null;
-			// BufferedReader reader;
 
 			try {
 				url = new URL(
@@ -248,7 +262,7 @@ public class Shotgun extends JavaPlugin {
 				e.printStackTrace();
 			}
 
-			if (!(remoteVersion.equalsIgnoreCase(pluginVersion))) {
+			if ((remoteVersion.equalsIgnoreCase(pluginVersion))) {
 				getLogger()
 						.log(Level.INFO,
 								"[Shotgun] You have updates! Please download version:"
