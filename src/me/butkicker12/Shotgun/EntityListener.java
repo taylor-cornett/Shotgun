@@ -26,7 +26,7 @@ public class EntityListener implements Listener {
 		 */
 		if (entity instanceof Egg) {
 			if (plugin.getCustomConfig()
-					.contains("weapon.enabled.grenade") == true) {
+					.getBoolean("weapon.enabled.grenade", true)) {
 				entity.getWorld().createExplosion(entity.getLocation(), 5F);
 				entity.getWorld().playEffect(entity.getLocation(),
 						Effect.MOBSPAWNER_FLAMES, 100);
@@ -38,7 +38,7 @@ public class EntityListener implements Listener {
 		 */
 		if (entity instanceof Snowball) {
 			if (plugin.getCustomConfig()
-					.contains("weapon.enabled.smoke") == true) {
+					.getBoolean("weapon.enabled.smoke", true)) {
 				entity.getWorld().createExplosion(entity.getLocation(), -10F);
 				for (int i = 0; i < 20; i++) {
 					entity.getWorld().playEffect(entity.getLocation(),

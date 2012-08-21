@@ -42,9 +42,9 @@ public class Shotgun extends JavaPlugin {
 	}
 
 	private void registerEvents() {
-		getServer().getPluginManager().registerEvents(new PlayerListener(),
+		getServer().getPluginManager().registerEvents(new PlayerListener(this),
 				this);
-		getServer().getPluginManager().registerEvents(new EntityListener(),
+		getServer().getPluginManager().registerEvents(new EntityListener(this),
 				this);
 	}
 
@@ -71,7 +71,7 @@ public class Shotgun extends JavaPlugin {
 					sender.sendMessage(ChatColor.BLUE
 							+ "[Shotgun] Did you mean /airstrike?");
 				}
-				if (getCustomConfig().getBoolean("weapon.enabled.airstrike")) {
+				if (getCustomConfig().getBoolean("weapon.enabled.airstrike", true)) {
 
 					if (sender.hasPermission("shotgun.airstrike")) {
 						target.getWorld().strikeLightning(targetLocation);
@@ -94,11 +94,13 @@ public class Shotgun extends JavaPlugin {
 					sender.sendMessage(ChatColor.BLUE
 							+ "[Shotgun] Did you mean /nuke?");
 				}
-				if (sender.hasPermission("shotgun.nuke")) {
-					target.getWorld().createExplosion(targetLocation, 50F);
-				} else {
-					sender.sendMessage(ChatColor.RED
-							+ "You do not have permission!");
+				if (getCustomConfig().getBoolean("weapon.enabled.nuke", true)) {
+					if (sender.hasPermission("shotgun.nuke")) {
+						target.getWorld().createExplosion(targetLocation, 30F);
+					} else {
+						sender.sendMessage(ChatColor.RED
+								+ "You do not have permission!");
+					}
 				}
 				return true;
 			}
@@ -109,7 +111,7 @@ public class Shotgun extends JavaPlugin {
 			if (command.getName().equalsIgnoreCase("shotgun")) {
 				if (sender.hasPermission("shotgun.shotgun")) {
 					if (getCustomConfig().getBoolean(
-							"weapons.shotgun.fire-via-command") == true) {
+							"weapons.shotgun.fire-via-command", true)) {
 						/*
 						 * Checks if player has 5 arrows. If they do then it
 						 * fires.
@@ -239,7 +241,7 @@ public class Shotgun extends JavaPlugin {
 	}
 
 	private void checkUpdate() {
-		if (getCustomConfig().getBoolean("options.automatic-update-checker") == true) {
+		if (getCustomConfig().getBoolean("options.automatic-update-checker", true)) {
 			getLogger().log(Level.INFO, "Checking for updates.......");
 
 			URL url;
