@@ -8,6 +8,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
 
+import me.butkicker12.Shotgun.Metrics.Metrics;
+import me.butkicker12.Shotgun.Metrics.Metrics.Graph;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -33,6 +36,7 @@ public class Shotgun extends JavaPlugin {
 		this.saveConfig();
 
 		this.checkUpdate();
+		this.setupMetrics();
 
 		this.registerEvents();
 	}
@@ -71,7 +75,8 @@ public class Shotgun extends JavaPlugin {
 					sender.sendMessage(ChatColor.BLUE
 							+ "[Shotgun] Did you mean /airstrike?");
 				}
-				if (getCustomConfig().getBoolean("weapon.enabled.airstrike", true)) {
+				if (getCustomConfig().getBoolean("weapon.enabled.airstrike",
+						true)) {
 
 					if (sender.hasPermission("shotgun.airstrike")) {
 						target.getWorld().strikeLightning(targetLocation);
@@ -241,7 +246,8 @@ public class Shotgun extends JavaPlugin {
 	}
 
 	private void checkUpdate() {
-		if (getCustomConfig().getBoolean("options.automatic-update-checker", true)) {
+		if (getCustomConfig().getBoolean("options.automatic-update-checker",
+				true)) {
 			getLogger().log(Level.INFO, "Checking for updates.......");
 
 			URL url;
@@ -280,6 +286,67 @@ public class Shotgun extends JavaPlugin {
 			} else {
 				getLogger().log(Level.INFO, "You have no updates! :D");
 			}
+		}
+	}
+
+	private void setupMetrics() {
+		try {
+			Metrics metrics = new Metrics(this);
+			Graph weapons = metrics.createGraph("Weapons used");
+
+			weapons.addPlotter(new Metrics.Plotter("Shotgun") {
+				public int getValue() {
+					if (getCustomConfig().getBoolean("weapon.enabled.shotgun",
+							false)) {
+						return 0;
+					}
+					return 1;
+				}
+			});
+
+			weapons.addPlotter(new Metrics.Plotter("Nuke") {
+				public int getValue() {
+					if (getCustomConfig().getBoolean("weapon.enabled.nuke",
+							false)) {
+						return 0;
+					}
+					return 1;
+				}
+			});
+
+			weapons.addPlotter(new Metrics.Plotter("Smoke Grenade") {
+				public int getValue() {
+					if (getCustomConfig().getBoolean("weapon.enabled.smoke",
+							false)) {
+						return 0;
+					}
+					return 1;
+				}
+			});
+
+			weapons.addPlotter(new Metrics.Plotter("Frag Grenade") {
+				public int getValue() {
+					if (getCustomConfig().getBoolean("weapon.enabled.grenade",
+							false)) {
+						return 0;
+					}
+					return 1;
+				}
+			});
+
+			weapons.addPlotter(new Metrics.Plotter("Airstrike") {
+				public int getValue() {
+					if (getCustomConfig().getBoolean(
+							"weapon.enabled.airstrike", false)) {
+						return 0;
+					}
+					return 1;
+				}
+			});
+
+			metrics.start();
+		} catch (IOException e) {
+			// Failed to submit the stats :-(
 		}
 	}
 }
