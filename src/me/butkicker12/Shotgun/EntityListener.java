@@ -19,7 +19,7 @@ public class EntityListener implements Listener {
 	@EventHandler
 	public void ProjectileHit(ProjectileHitEvent event) {
 
-		Entity entity = event.getEntity();
+		final Entity entity = event.getEntity();
 
 		/*
 		 * Grenade (Egg)
@@ -27,9 +27,11 @@ public class EntityListener implements Listener {
 		if (entity instanceof Egg) {
 			if (plugin.getCustomConfig()
 					.getBoolean("weapon.enabled.grenade", true)) {
-				entity.getWorld().createExplosion(entity.getLocation(), 5F);
+				entity.getWorld().createExplosion(entity.getLocation(), 5F, true);
+				for(int i = 0; i < 10; i++) {
 				entity.getWorld().playEffect(entity.getLocation(),
 						Effect.MOBSPAWNER_FLAMES, 100);
+				}
 			}
 		}
 
@@ -39,11 +41,54 @@ public class EntityListener implements Listener {
 		if (entity instanceof Snowball) {
 			if (plugin.getCustomConfig()
 					.getBoolean("weapon.enabled.smoke", true)) {
-				entity.getWorld().createExplosion(entity.getLocation(), -10F);
-				for (int i = 0; i < 20; i++) {
+				
+				entity.getWorld().createExplosion(entity.getLocation(), -12F);
+				
+				for (int i = 0; i < 3000; i++) {
 					entity.getWorld().playEffect(entity.getLocation(),
 							Effect.SMOKE, 1);
 				}
+				
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+					   public void run() {
+					       System.out.println("This message is printed by an async thread");
+					       for (int i = 0; i < 3000; i++) {
+								entity.getWorld().playEffect(entity.getLocation(),
+										Effect.SMOKE, 1);
+							}
+					   }
+					}, 20L);
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+					   public void run() {
+					       System.out.println("This message is printed by an async thread");
+					       for (int i = 0; i < 3000; i++) {
+								entity.getWorld().playEffect(entity.getLocation(),
+										Effect.SMOKE, 1);
+							}
+					   }
+					}, 30L);
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+					   public void run() {
+					       System.out.println("This message is printed by an async thread");
+					       for (int i = 0; i < 3000; i++) {
+								entity.getWorld().playEffect(entity.getLocation(),
+										Effect.SMOKE, 1);
+							}
+					   }
+					}, 40L);
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+					   public void run() {
+					       System.out.println("This message is printed by an async thread");
+					       for (int i = 0; i < 3000; i++) {
+								entity.getWorld().playEffect(entity.getLocation(),
+										Effect.SMOKE, 1);
+							}
+					   }
+					}, 50L);
 			}
 		}
 	}

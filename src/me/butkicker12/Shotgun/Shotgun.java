@@ -346,7 +346,7 @@ public class Shotgun extends JavaPlugin {
 
 			metrics.start();
 		} catch (IOException e) {
-			// Failed to submit the stats :-(
+			getLogger().log(Level.WARNING, "Failed to submit plugin stats" + e.getMessage());
 		}
 	}
 }
