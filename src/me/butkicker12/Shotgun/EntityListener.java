@@ -48,47 +48,6 @@ public class EntityListener implements Listener {
 					entity.getWorld().playEffect(entity.getLocation(),
 							Effect.SMOKE, 1);
 				}
-				
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
-					   public void run() {
-					       System.out.println("This message is printed by an async thread");
-					       for (int i = 0; i < 3000; i++) {
-								entity.getWorld().playEffect(entity.getLocation(),
-										Effect.SMOKE, 1);
-							}
-					   }
-					}, 20L);
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
-					   public void run() {
-					       System.out.println("This message is printed by an async thread");
-					       for (int i = 0; i < 3000; i++) {
-								entity.getWorld().playEffect(entity.getLocation(),
-										Effect.SMOKE, 1);
-							}
-					   }
-					}, 30L);
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
-					   public void run() {
-					       System.out.println("This message is printed by an async thread");
-					       for (int i = 0; i < 3000; i++) {
-								entity.getWorld().playEffect(entity.getLocation(),
-										Effect.SMOKE, 1);
-							}
-					   }
-					}, 40L);
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
-					   public void run() {
-					       System.out.println("This message is printed by an async thread");
-					       for (int i = 0; i < 3000; i++) {
-								entity.getWorld().playEffect(entity.getLocation(),
-										Effect.SMOKE, 1);
-							}
-					   }
-					}, 50L);
 			}
 		}
 	}

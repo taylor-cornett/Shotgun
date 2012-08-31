@@ -29,6 +29,7 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 		Location playerLocation = player.getLocation();
 		World world = player.getWorld();
+		GameMode gamemode = player.getGameMode();
 
 		/*
 		 * Shotgun gun
@@ -42,7 +43,8 @@ public class PlayerListener implements Listener {
 					 * Checks if player has 5 arrows. If they do then it fires.
 					 * If in creative mode then don't take arrows
 					 */
-					if (player.getGameMode() == GameMode.SURVIVAL) {
+					switch (gamemode) {
+					case SURVIVAL:
 						if (player.getInventory().contains(Material.ARROW, 5)) {
 
 							Inventory inv = player.getInventory();
@@ -82,8 +84,9 @@ public class PlayerListener implements Listener {
 							player.sendMessage(ChatColor.BLUE
 									+ "[Shotgun] You need at least 5 arrows to use the shotgun!");
 						}
-					}
-					if (player.getGameMode() == GameMode.CREATIVE) {
+						break;
+
+					case CREATIVE:
 
 						world.playEffect(playerLocation, Effect.BOW_FIRE, 50);
 						world.playEffect(playerLocation, Effect.SMOKE, 105);
@@ -97,6 +100,9 @@ public class PlayerListener implements Listener {
 						for (int i = 0; i < 5; i++) {
 							player.launchProjectile(Arrow.class);
 						}
+						break;
+					default:
+						break;
 					}
 				}
 			}
