@@ -1,5 +1,5 @@
 name: Shotgun
-version: 1.3
+version: 1.3.1
 main: me.butkicker12.Shotgun.Shotgun
 author: Butkicker12
 commands:
