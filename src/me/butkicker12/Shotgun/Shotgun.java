@@ -299,58 +299,54 @@ public class Shotgun extends JavaPlugin {
 
 			weapons.addPlotter(new Metrics.Plotter("Shotgun") {
 				public int getValue() {
-					if (getCustomConfig().getBoolean("weapon.enabled.shotgun",
-							false)) {
-						return 0;
+					if (getCustomConfig().getBoolean("weapon.enabled.shotgun")) {
+						return 1;
 					}
-					return 1;
+					return 0;
 				}
 			});
 
 			weapons.addPlotter(new Metrics.Plotter("Nuke") {
 				public int getValue() {
-					if (getCustomConfig().getBoolean("weapon.enabled.nuke",
-							false)) {
-						return 0;
+					if (getCustomConfig().getBoolean("weapon.enabled.nuke")) {
+						return 1;
 					}
-					return 1;
+					return 0;
 				}
 			});
 
 			weapons.addPlotter(new Metrics.Plotter("Smoke Grenade") {
 				public int getValue() {
-					if (getCustomConfig().getBoolean("weapon.enabled.smoke",
-							false)) {
-						return 0;
+					if (getCustomConfig().getBoolean("weapon.enabled.smoke")) {
+						return 1;
 					}
-					return 1;
+					return 0;
 				}
 			});
 
 			weapons.addPlotter(new Metrics.Plotter("Frag Grenade") {
 				public int getValue() {
-					if (getCustomConfig().getBoolean("weapon.enabled.grenade",
-							false)) {
-						return 0;
+					if (getCustomConfig().getBoolean("weapon.enabled.grenade")) {
+						return 1;
 					}
-					return 1;
+					return 0;
 				}
 			});
 
 			weapons.addPlotter(new Metrics.Plotter("Airstrike") {
 				public int getValue() {
-					if (getCustomConfig().getBoolean(
-							"weapon.enabled.airstrike", false)) {
-						return 0;
+					if (getCustomConfig()
+							.getBoolean("weapon.enabled.airstrike")) {
+						return 1;
 					}
-					return 1;
+					return 0;
 				}
 			});
 
 			metrics.start();
 		} catch (IOException e) {
 			getLogger().log(Level.WARNING,
-					"Failed to submit plugin stats" + e.getMessage());
+					"Failed to submit plugin stats: " + e.getMessage());
 		}
 	}
 
