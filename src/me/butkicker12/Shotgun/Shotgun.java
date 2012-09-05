@@ -2,8 +2,10 @@ package me.butkicker12.Shotgun;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
@@ -190,16 +192,17 @@ public class Shotgun extends JavaPlugin {
 	}
 
 	private void writeYaml() {
-		// Update checker
+		// Options
 		if (!(getCustomConfig().contains("options.automatic-update-checker"))) {
 			getCustomConfig().set("options.automatic-update-checker", true);
 		}
 		if (!(getCustomConfig().contains("options.shotgun.fire-via-command"))) {
 			getCustomConfig().set("options.shotgun.fire-via-command", false);
 		}
-		/*
-		 * Weapon cooldown
-		 */
+		if (!(getCustomConfig().contains("options.log-weapon-use-to-file"))) {
+			getCustomConfig().set("options.log-weapon-use-to-file", false);
+		}
+		// Weapon cooldown
 		getCustomConfig().createSection(
 				"#options below are not used and don't work");
 		if (!getCustomConfig().contains("weapon.cooldown.shotgun")) {
@@ -218,7 +221,7 @@ public class Shotgun extends JavaPlugin {
 			getCustomConfig().set("weapon.cooldown.grenade-launcher", "20");
 		}
 		/*
-		 * Enabled weapon
+		 * Weapond enabled
 		 */
 		if (!(getCustomConfig().contains("weapon.enabled.shotgun"))) {
 			getCustomConfig().set("weapon.enabled.shotgun", true);
@@ -346,7 +349,34 @@ public class Shotgun extends JavaPlugin {
 
 			metrics.start();
 		} catch (IOException e) {
-			getLogger().log(Level.WARNING, "Failed to submit plugin stats" + e.getMessage());
+			getLogger().log(Level.WARNING,
+					"Failed to submit plugin stats" + e.getMessage());
+		}
+	}
+
+	public void logUse(String message) {
+		if (getCustomConfig().getBoolean("options.log-weapon-use-to-file")) {
+			File folder = getDataFolder();
+			if (!folder.exists()) {
+				folder.mkdir();
+			}
+
+			File file = new File(folder, "log.txt");
+			if (!file.exists()) {
+				try {
+					file.createNewFile();
+
+					PrintWriter pw = new PrintWriter(new FileWriter(file, true));
+
+					pw.println(message);
+					pw.flush();
+					pw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					getLogger().log(Level.WARNING,
+							"[Shotgun] Unable to create log file (log.txt");
+				}
+			}
 		}
 	}
 }
