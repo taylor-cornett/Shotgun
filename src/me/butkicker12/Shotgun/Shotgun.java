@@ -45,7 +45,7 @@ public class Shotgun extends JavaPlugin {
 	}
 
 	public void onDisable() {
-		saveConfig();
+		this.saveConfig();
 	}
 
 	private void registerEvents() {
@@ -149,6 +149,7 @@ public class Shotgun extends JavaPlugin {
 											break;
 									}
 								}
+							}
 
 							// run task twice
 							for (int i = 0; i < 2; i++) {
@@ -311,7 +312,7 @@ public class Shotgun extends JavaPlugin {
 			}
 		}
 	}
-
+	
 	private void setupMetrics() {
 		try {
 			Metrics metrics = new Metrics(this);
