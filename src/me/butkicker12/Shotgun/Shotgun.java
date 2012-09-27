@@ -24,6 +24,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -126,15 +127,28 @@ public class Shotgun extends JavaPlugin {
 						if (((Player) sender).getInventory().contains(
 								Material.ARROW, 5)) {
 
-							((Player) sender).getInventory().removeItem(
-									new ItemStack(Material.ARROW, 5));
+							Inventory inv = ((Player) sender).getInventory();
+							Material type = Material.ARROW;
+							//int amount = 5;
+							int amount = getCustomConfig().getInt("options.weapon.shotgun.inventory-amount");
+							
+							if (amount > 0) {
+								amount = 0;
+							}
 
-							((Player) sender).getWorld().playEffect(
-									((Player) sender).getLocation(),
-									Effect.BOW_FIRE, 50);
-							((Player) sender).getWorld().playEffect(
-									((Player) sender).getLocation(),
-									Effect.SMOKE, 105);
+							for (ItemStack is : inv.getContents()) {
+								if (is != null && is.getType() == type) {
+									int newamount = is.getAmount() - amount;
+									if (newamount > 0) {
+										is.setAmount(newamount);
+										break;
+									} else {
+										inv.remove(is);
+										amount = -newamount;
+										if (amount == 0)
+											break;
+									}
+								}
 
 							// run task twice
 							for (int i = 0; i < 2; i++) {

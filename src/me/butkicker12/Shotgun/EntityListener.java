@@ -20,7 +20,7 @@ public class EntityListener implements Listener {
 	public void ProjectileHit(ProjectileHitEvent event) {
 
 		final Entity entity = event.getEntity();
-
+		
 		/*
 		 * Grenade (Egg)
 		 */
