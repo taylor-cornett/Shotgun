@@ -49,7 +49,12 @@ public class PlayerListener implements Listener {
 
 							Inventory inv = player.getInventory();
 							Material type = Material.ARROW;
-							int amount = 5;
+							//int amount = 5;
+							int amount = plugin.getCustomConfig().getInt("options.weapon.shotgun.inventory-amount");
+							
+							if (amount > 0) {
+								amount = 0;
+							}
 
 							for (ItemStack is : inv.getContents()) {
 								if (is != null && is.getType() == type) {

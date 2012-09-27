@@ -202,6 +202,12 @@ public class Shotgun extends JavaPlugin {
 		if (!(getCustomConfig().contains("options.log-weapon-use-to-file"))) {
 			getCustomConfig().set("options.log-weapon-use-to-file", false);
 		}
+		if (!(getCustomConfig().contains("options.verbose"))) {
+			getCustomConfig().set("options.verbose", false);
+		}
+		if (!(getCustomConfig().contains("options.weapon.shotgun.inventory-amount"))) {
+			getCustomConfig().set("options.weapon.shotgun.inventory-amount", 5);
+		}
 		// Weapon cooldown
 		getCustomConfig().createSection(
 				"#options below are not used and don't work");
@@ -369,10 +375,15 @@ public class Shotgun extends JavaPlugin {
 					pw.close();
 				} catch (IOException e) {
 					e.printStackTrace();
-					getLogger().log(Level.WARNING,
-							"[Shotgun] Unable to create log file (log.txt");
+					getLogger().log(Level.WARNING, "Unable to create log file (" + getDataFolder() + "/log.txt)" + e.getMessage());
 				}
 			}
+		}
+	}
+
+	public void shotgunVerbose(Level level, String message) {
+		if (getCustomConfig().getBoolean("options.verbose")) {
+			getLogger().log(level, message);
 		}
 	}
 }
