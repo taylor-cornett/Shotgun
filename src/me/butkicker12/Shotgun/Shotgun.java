@@ -14,7 +14,6 @@ import me.butkicker12.Shotgun.Metrics.Metrics;
 import me.butkicker12.Shotgun.Metrics.Metrics.Graph;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
