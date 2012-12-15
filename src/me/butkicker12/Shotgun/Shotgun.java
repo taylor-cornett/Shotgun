@@ -128,9 +128,10 @@ public class Shotgun extends JavaPlugin {
 
 							Inventory inv = ((Player) sender).getInventory();
 							Material type = Material.ARROW;
-							//int amount = 5;
-							int amount = getCustomConfig().getInt("options.weapon.shotgun.inventory-amount");
-							
+							// int amount = 5;
+							int amount = getCustomConfig().getInt(
+									"options.weapon.shotgun.inventory-amount");
+
 							if (amount > 0) {
 								amount = 0;
 							}
@@ -165,8 +166,12 @@ public class Shotgun extends JavaPlugin {
 									+ "[Shotgun] You need at least 5 arrows to use the shotgun!");
 						}
 					} else {
-						sender.sendMessage("[Shotgun] enable: 'weapons.shotgun.fire-via-command' for this command to work");
-						return false;
+						if (sender.isOp()) {
+							sender.sendMessage("[Shotgun] enable: 'weapons.shotgun.fire-via-command' for this command to work");
+							return false;
+						} else {
+							sender.sendMessage("[Shotgun] This feature is currently disabled. Contact your server administrator if you believe this is error.");
+						}
 					}
 				}
 				return true;
@@ -219,7 +224,8 @@ public class Shotgun extends JavaPlugin {
 		if (!(getCustomConfig().contains("options.verbose"))) {
 			getCustomConfig().set("options.verbose", false);
 		}
-		if (!(getCustomConfig().contains("options.weapon.shotgun.inventory-amount"))) {
+		if (!(getCustomConfig()
+				.contains("options.weapon.shotgun.inventory-amount"))) {
 			getCustomConfig().set("options.weapon.shotgun.inventory-amount", 5);
 		}
 		// Weapon cooldown
@@ -263,7 +269,7 @@ public class Shotgun extends JavaPlugin {
 		 * 
 		 * if
 		 * (!(getCustomConfig().contains("weapon.enabled..grenade-launcher"))) {
-		 * getCustomConfig().set("weapon.enabled..grenade-launcher", true); }
+		 * getCustomConfig().set("weapon.enabled.grenade-launcher", true); }
 		 * getCustomConfig().set("log plugin use to file", false");
 		 */
 	}
@@ -311,7 +317,7 @@ public class Shotgun extends JavaPlugin {
 			}
 		}
 	}
-	
+
 	private void setupMetrics() {
 		try {
 			Metrics metrics = new Metrics(this);
@@ -389,7 +395,10 @@ public class Shotgun extends JavaPlugin {
 					pw.close();
 				} catch (IOException e) {
 					e.printStackTrace();
-					getLogger().log(Level.WARNING, "Unable to create log file (" + getDataFolder() + "/log.txt)" + e.getMessage());
+					getLogger().log(
+							Level.WARNING,
+							"Unable to create log file (" + getDataFolder()
+									+ "/log.txt)" + e.getMessage());
 				}
 			}
 		}
